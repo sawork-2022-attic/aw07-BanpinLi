@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: pos-delivery
+  rabbitmq:
+    virtual-host: vm
+    username: root
+    password: root
+  cloud:
+    function:
+      definition: orderDelivery
+    stream:
+      function:
+        bindings:
+          orderDelivery-in-0: orderDelivery
+      rabbit:
+        bindings:
+          orderDelivery:
+            consumer:
+              declare-exchange: false
+server:
+  port: 1148
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:1111/eureka

@@ -1,0 +1,83 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Order
+  license:
+    name: MIT
+paths:
+  /delivery/{orderId}:
+    get:
+      summary: 根据订单号查询订单状态
+      operationId: getDelivery
+      tags:
+        - delivery
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: 订单号
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 用户的所有订单
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Delivery"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+components:
+  schemas:
+    Delivery:
+      type: object
+      required:
+        - order
+      properties:
+        order:
+          $ref: "#/components/schemas/Order"
+        status:
+          type: string
+    Product:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price:
+          type: double
+        image:
+          type: string
+    Order:
+      type: object
+      required:
+        - orderId
+      properties:
+        orderId:
+          type: string
+        product:
+          $ref: "#/components/schemas/Product"
+        quantity:
+          type: integer
+          format: int32
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
