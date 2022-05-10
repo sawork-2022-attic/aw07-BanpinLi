@@ -1,0 +1,150 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Order
+  license:
+    name: MIT
+paths:
+  /order/{username}:
+    get:
+      summary: 查看用户的所有的订单
+      operationId: getOrders
+      tags:
+        - orders
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: 用户名
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 用户的所有订单
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Orders"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /order/{username}/{productId}/{quantity}:
+    post:
+      summary: 用户新增一个订单，商品id和数量如上
+      operationId: addOrder
+      tags:
+        - add
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: 用户名
+          schema:
+            type: string
+        - name: productId
+          in: path
+          required: true
+          description: 商品id
+          schema:
+            type: string
+        - name: quantity
+          in: path
+          required: true
+          description: 商品数量
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: 用户的所有订单
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /order/{username}/{orderId}:
+    get:
+      summary: 查看用户的某一个订单
+      operationId: getOrder
+      tags:
+        - order
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: 用户名
+          schema:
+            type: string
+        - name: orderId
+          in: path
+          required: true
+          description: 订单号
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 用户的所有订单
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+
+components:
+  schemas:
+    Product:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price:
+          type: double
+        image:
+          type: string
+    Order:
+      type: object
+      required:
+        - orderId
+      properties:
+        orderId:
+          type: string
+        product:
+          $ref: "#/components/schemas/Product"
+        quantity:
+          type: integer
+          format: int32
+    Orders:
+      type: object
+      items:
+          $ref: "#/components/schemas/Order"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
