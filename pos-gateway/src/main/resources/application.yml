@@ -14,6 +14,10 @@ spring:
           uri: lb:http://POS-ORDER
           predicates:
             - Path=/api/order/**
+        - id: delivery-route
+          uri: lb:http://POS-DELIVERY
+          predicates:
+            - Path=/api/delivery/**
   application:
     name: pos-gateway
   main:
