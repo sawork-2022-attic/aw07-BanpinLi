@@ -8,6 +8,7 @@ import com.micropos.order.mapper.OrderMapper;
 import com.micropos.order.model.Order;
 import com.micropos.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,8 @@ public class OrderController implements OrderApi {
     private OrderService orderService;
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private StreamBridge streamBridge;
 
     private static final String POS_PRODUCTS = "http://POS-PRODUCTS/";
 
@@ -40,8 +43,10 @@ public class OrderController implements OrderApi {
         order.setProduct(productDto);
         order.setQuantity(quantity);
         order = orderService.saveOrder(username, order);
-        // TODO: 使用一个消息队列将购物消息发送给delivery
-        // -------------------------------------------
+
+        // 将订单放入到消息队列，让delivery模块进行处理
+        streamBridge.send("orderDelivery", orderMapper.toOrderDto(order));
+
         return new ResponseEntity<>(orderMapper.toOrderDto(order), HttpStatus.OK);
     }
 

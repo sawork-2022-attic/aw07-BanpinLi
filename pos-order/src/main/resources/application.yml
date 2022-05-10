@@ -1,6 +1,16 @@
 spring:
   application:
     name: pos-order
+  cloud:
+    stream:
+      bindings:
+        orderDelivery-out-0:
+          destination: order-process
+  rabbitmq:
+    virtual-host: vm
+    username: root
+    password: root
+
 server:
   port: 1147
 eureka:
