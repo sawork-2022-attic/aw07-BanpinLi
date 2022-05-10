@@ -52,6 +52,7 @@ public class CartController implements CartsApi {
             orderDto = restTemplate.postForObject(url, orderDto, OrderDto.class);
             orderDtoList.add(orderDto);
         }
+        cartService.emptyCart(username);
         return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
     }
 
